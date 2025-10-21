@@ -1,10 +1,10 @@
 # Real Estate Management System
 
-## 🏠 Project Overview
+## Project Overview
 
 A comprehensive full-stack real estate management platform that enables property owners, tenants, and administrators to efficiently manage properties, maintenance requests, payments, and property listings. The system provides a seamless experience for browsing properties, submitting maintenance requests, and handling property-related transactions.
 
-## 📋 Project Proposal
+##  Project Proposal
 
 ### Problem Statement
 
@@ -26,7 +26,7 @@ Our Real Estate Management System is a modern web application that addresses the
 5. **Multilingual Support** - Available in English, German, and French
 6. **Cloud Storage** - Firebase integration for image uploads and storage
 
-## 🎯 Key Features
+##  Key Features
 
 ### 1. Property Management
 - **Add Properties**: Multi-step form with image uploads, location picker, and detailed specifications
@@ -69,7 +69,7 @@ Our Real Estate Management System is a modern web application that addresses the
 - **Dynamic Translation**: Real-time language switching
 - **Localized Content**: All UI elements and messages translated
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 ### Frontend
 - **Framework**: Next.js 15.2.4 (App Router)
@@ -101,7 +101,7 @@ Our Real Estate Management System is a modern web application that addresses the
 - **Date Handling**: date-fns
 - **Code Quality**: ESLint, TypeScript
 
-## 📊 Database Schema
+##  Database Schema
 
 ### Core Tables
 
@@ -179,7 +179,7 @@ Our Real Estate Management System is a modern web application that addresses the
 - created_at (timestamp)
 ```
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js 18+ 
@@ -287,7 +287,7 @@ real-estate-app/
 └── public/                      # Static assets
 ```
 
-## 🎨 User Interface
+##  User Interface
 
 ### Key Pages
 
@@ -306,7 +306,7 @@ real-estate-app/
 - **Loading States**: Skeletons and spinners for better UX
 - **Error Handling**: User-friendly error messages
 
-## 🔐 Security Features
+##  Security Features
 
 - **Row Level Security (RLS)**: Supabase RLS policies protect data
 - **Authentication**: Secure user authentication via Supabase Auth
@@ -314,7 +314,7 @@ real-estate-app/
 - **Input Validation**: Zod schemas validate all form inputs
 - **HTTPS**: Secure communication (production)
 
-## 🌍 Internationalization
+##  Internationalization
 
 The application supports three languages:
 - **English (en)**: Default language
@@ -323,7 +323,7 @@ The application supports three languages:
 
 Users can switch languages using the language switcher in the navigation.
 
-## 📈 Future Enhancements
+##  Future Enhancements
 
 ### Phase 2
 - [ ] Real-time chat between owners and tenants
@@ -341,7 +341,7 @@ Users can switch languages using the language switcher in the navigation.
 - [ ] Reporting and export functionality
 - [ ] Bulk property import
 
-## 👥 User Roles & Permissions
+##  User Roles & Permissions
 
 ### Property Owner
 - Add, edit, delete properties
@@ -361,7 +361,7 @@ Users can switch languages using the language switcher in the navigation.
 - Content moderation
 - System configuration
 
-## 🧪 Testing
+##  Testing
 
 ```bash
 # Run tests (when implemented)
@@ -377,7 +377,7 @@ yarn type-check
 yarn lint
 ```
 
-## 📦 Deployment
+##  Deployment
 
 ### Vercel (Recommended)
 1. Push code to GitHub
@@ -390,28 +390,8 @@ yarn lint
 - Requires environment variables configuration
 - Supports serverless and traditional deployments
 
-## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 📞 Contact & Support
-
-For questions, issues, or suggestions:
-- Create an issue on GitHub
-- Email: support@realestate-app.com
-- Documentation: [Link to docs]
-
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **Next.js Team** - Amazing React framework
 - **Supabase Team** - Excellent backend-as-a-service
@@ -422,7 +402,7 @@ For questions, issues, or suggestions:
 
 ---
 
-**Built with ❤️ using Next.js, TypeScript, and Supabase**
+**Built with  using Next.js, TypeScript, and Supabase**
 
 **Version**: 1.0.0  
 **Last Updated**: October 2025
