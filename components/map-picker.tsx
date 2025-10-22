@@ -21,6 +21,7 @@ interface MapPickerProps {
 }
 
 export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAddress }: MapPickerProps) {
+  const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
@@ -214,7 +215,17 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
         }
       }
       
-      // Clean up map
+      // Clean up autocomplete
+      if (autocompleteInstanceRef.current) {
+        try {
+          google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current)
+          autocompleteInstanceRef.current = null
+        } catch (error) {
+          console.error("Error cleaning up autocomplete:", error)
+        }
+      }
+      
+      // Clean up map - must be last
       if (mapInstanceRef.current) {
         try {
           google.maps.event.clearInstanceListeners(mapInstanceRef.current)
@@ -224,13 +235,12 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
         }
       }
       
-      // Clean up autocomplete
-      if (autocompleteInstanceRef.current) {
+      // Clear the map container to prevent React removeChild errors
+      if (mapRef.current) {
         try {
-          google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current)
-          autocompleteInstanceRef.current = null
+          mapRef.current.innerHTML = ''
         } catch (error) {
-          console.error("Error cleaning up autocomplete:", error)
+          console.error("Error clearing map container:", error)
         }
       }
     }
@@ -288,15 +298,16 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
       </div>
 
       <div 
-        ref={mapRef} 
-        className="h-[400px] w-full rounded-lg border border-border overflow-hidden bg-muted flex items-center justify-center"
+        ref={mapContainerRef}
+        className="h-[400px] w-full rounded-lg border border-border overflow-hidden bg-muted relative"
       >
         {isLoading && (
-          <div className="flex flex-col items-center gap-2">
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-muted">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
           </div>
         )}
+        <div ref={mapRef} className="h-full w-full" />
       </div>
 
       {coordinates.lat !== 0 && coordinates.lng !== 0 && (
