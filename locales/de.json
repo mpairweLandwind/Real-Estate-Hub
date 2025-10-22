@@ -338,11 +338,13 @@
     "title": "Zahlungsverlauf",
     "makePayment": "Zahlung tätigen",
     "completePayment": "Zahlung abschließen",
+    "completePaymentDescription": "Wählen Sie Ihre Zahlungsmethode und schließen Sie die Transaktion sicher ab",
     "paymentMethod": "Zahlungsmethode",
     "amount": "Betrag",
     "paypal": "PayPal",
     "mtnMoney": "MTN Mobile Money",
     "phoneNumber": "Telefonnummer",
+    "phoneNumberHint": "Geben Sie Ihre bei MTN Mobile Money registrierte Telefonnummer ein",
     "processing": "Wird verarbeitet...",
     "payNow": "Jetzt bezahlen",
     "transactionId": "Transaktions-ID",
@@ -363,7 +365,25 @@
     "deposit": "Kaution",
     "enterPhone": "Geben Sie Ihre bei MTN Mobile Money registrierte Telefonnummer ein",
     "securePayment": "Ihre Zahlung ist sicher und verschlüsselt. Wir speichern niemals Ihre Zahlungsdetails.",
-    "generalTransaction": "Allgemeine Transaktion"
+    "generalTransaction": "Allgemeine Transaktion",
+    "transactionTypes": {
+      "rent": "Mietzahlung",
+      "sale": "Kaufzahlung",
+      "maintenance": "Wartungszahlung",
+      "deposit": "Kaution",
+      "general": "Allgemeine Transaktion"
+    },
+    "methods": {
+      "paypal": "PayPal",
+      "mtnMoney": "MTN Mobile Money",
+      "mtnMobileMoney": "MTN Mobile Money",
+      "card": "Kredit-/Debitkarte",
+      "cash": "Bargeld",
+      "bank": "Banküberweisung"
+    },
+    "pay": "Bezahlen",
+    "cancel": "Abbrechen",
+    "securityMessage": "Ihre Zahlung ist sicher und verschlüsselt. Wir speichern niemals Ihre Zahlungsdetails."
   },
   "profile": {
     "title": "Profil",

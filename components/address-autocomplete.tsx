@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { MapPin, Loader2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { loadGoogleMapsAPI } from "@/lib/google-maps-loader"
 
 // Declare google global
 declare global {
@@ -27,48 +28,23 @@ export function AddressAutocomplete({
   disabled = false 
 }: AddressAutocompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const autocompleteInstanceRef = useRef<google.maps.places.Autocomplete | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
 
   useEffect(() => {
+    let mounted = true
+    
     const initializeAutocomplete = async () => {
-      if (typeof window === "undefined" || !inputRef.current) return
+      if (typeof window === "undefined" || !inputRef.current || !mounted) return
 
       setIsLoading(true)
 
       try {
-        // Load Google Maps script if not already loaded
-        if (!window.google?.maps) {
-          // Check if script is already being loaded
-          const existingScript = document.querySelector('script[src*="maps.googleapis.com"]')
-          
-          if (!existingScript) {
-            const script = document.createElement('script')
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`
-            script.async = true
-            script.defer = true
-            
-            await new Promise<void>((resolve, reject) => {
-              // Create global callback function
-              (window as any).initGoogleMaps = () => {
-                delete (window as any).initGoogleMaps // Cleanup
-                resolve()
-              }
-              script.onerror = () => reject(new Error('Failed to load Google Maps'))
-              document.head.appendChild(script)
-            })
-          } else {
-            // Script is loading, wait for it to be ready
-            await new Promise<void>((resolve) => {
-              const checkGoogleMaps = setInterval(() => {
-                if (window.google?.maps?.places?.Autocomplete) {
-                  clearInterval(checkGoogleMaps)
-                  resolve()
-                }
-              }, 100)
-            })
-          }
-        }
+        // Load Google Maps using shared loader
+        await loadGoogleMapsAPI()
+
+        if (!mounted) return
 
         // Initialize autocomplete
         const autocompleteInstance = new google.maps.places.Autocomplete(inputRef.current, {
@@ -76,10 +52,15 @@ export function AddressAutocomplete({
           types: ["(cities)", "address"],
         })
 
-        setAutocomplete(autocompleteInstance)
+        if (mounted) {
+          autocompleteInstanceRef.current = autocompleteInstance
+          setAutocomplete(autocompleteInstance)
+        }
 
         // Handle place selection
         autocompleteInstance.addListener("place_changed", () => {
+          if (!mounted) return
+          
           const place = autocompleteInstance.getPlace()
 
           if (place.geometry?.location) {
@@ -103,14 +84,28 @@ export function AddressAutocomplete({
           }
         })
 
-        setIsLoading(false)
+        if (mounted) setIsLoading(false)
       } catch (error) {
         console.error("Error loading Google Places:", error)
-        setIsLoading(false)
+        if (mounted) setIsLoading(false)
       }
     }
 
     initializeAutocomplete()
+
+    // Cleanup function
+    return () => {
+      mounted = false
+      
+      if (autocompleteInstanceRef.current) {
+        try {
+          google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current)
+          autocompleteInstanceRef.current = null
+        } catch (error) {
+          console.error("Error cleaning up autocomplete:", error)
+        }
+      }
+    }
   }, [])
 
   return (

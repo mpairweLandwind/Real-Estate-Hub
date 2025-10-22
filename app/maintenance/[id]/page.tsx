@@ -16,7 +16,7 @@ import { useToast } from "@/components/ui/toast"
 import { Wrench, ArrowLeft, MapPin, Calendar, DollarSign, Edit, Trash2, Save, X } from "lucide-react"
 import Link from "next/link"
 
-export default function MaintenanceDetailPage({ params }: { params: { id: string } }) {
+export default function MaintenanceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const supabase = createClient()
   const { addToast } = useToast()
@@ -26,6 +26,7 @@ export default function MaintenanceDetailPage({ params }: { params: { id: string
   const [isSaving, setIsSaving] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [requestId, setRequestId] = useState<string | null>(null)
 
   const [editData, setEditData] = useState({
     status: "",
@@ -37,6 +38,10 @@ export default function MaintenanceDetailPage({ params }: { params: { id: string
 
   useEffect(() => {
     async function fetchRequest() {
+      // Await params first
+      const resolvedParams = await params
+      setRequestId(resolvedParams.id)
+
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -50,7 +55,7 @@ export default function MaintenanceDetailPage({ params }: { params: { id: string
         .select(
           "*, properties(title, address, city, country), profiles!maintenance_requests_requester_id_fkey(full_name)",
         )
-        .eq("id", params.id)
+        .eq("id", resolvedParams.id)
         .single()
 
       if (error || !data) {
@@ -75,9 +80,10 @@ export default function MaintenanceDetailPage({ params }: { params: { id: string
     }
 
     fetchRequest()
-  }, [params.id])
+  }, [])
 
   const handleSave = async () => {
+    if (!requestId) return
     setIsSaving(true)
 
     try {
@@ -92,7 +98,7 @@ export default function MaintenanceDetailPage({ params }: { params: { id: string
           completed_date: editData.status === "completed" ? new Date().toISOString() : null,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", params.id)
+        .eq("id", requestId)
 
       if (error) throw error
 
@@ -102,7 +108,7 @@ export default function MaintenanceDetailPage({ params }: { params: { id: string
         .select(
           "*, properties(title, address, city, country), profiles!maintenance_requests_requester_id_fkey(full_name)",
         )
-        .eq("id", params.id)
+        .eq("id", requestId)
         .single()
 
       if (updatedData) setRequest(updatedData)
@@ -127,10 +133,11 @@ export default function MaintenanceDetailPage({ params }: { params: { id: string
   }
 
   const handleDelete = async () => {
+    if (!requestId) return
     setIsDeleting(true)
 
     try {
-      const { error } = await supabase.from("maintenance_requests").delete().eq("id", params.id)
+      const { error } = await supabase.from("maintenance_requests").delete().eq("id", requestId)
 
       if (error) throw error
 

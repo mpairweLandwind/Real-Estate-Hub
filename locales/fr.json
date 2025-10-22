@@ -338,11 +338,13 @@
     "title": "Historique des paiements",
     "makePayment": "Effectuer un paiement",
     "completePayment": "Finaliser le paiement",
+    "completePaymentDescription": "Choisissez votre méthode de paiement et finalisez la transaction en toute sécurité",
     "paymentMethod": "Méthode de paiement",
     "amount": "Montant",
     "paypal": "PayPal",
     "mtnMoney": "MTN Mobile Money",
     "phoneNumber": "Numéro de téléphone",
+    "phoneNumberHint": "Entrez votre numéro de téléphone enregistré MTN Mobile Money",
     "processing": "Traitement...",
     "payNow": "Payer maintenant",
     "transactionId": "ID de transaction",
@@ -363,7 +365,25 @@
     "deposit": "Dépôt",
     "enterPhone": "Entrez votre numéro de téléphone enregistré MTN Mobile Money",
     "securePayment": "Votre paiement est sécurisé et crypté. Nous ne stockons jamais vos détails de paiement.",
-    "generalTransaction": "Transaction générale"
+    "generalTransaction": "Transaction générale",
+    "transactionTypes": {
+      "rent": "Paiement de loyer",
+      "sale": "Paiement de vente",
+      "maintenance": "Paiement de maintenance",
+      "deposit": "Dépôt",
+      "general": "Transaction générale"
+    },
+    "methods": {
+      "paypal": "PayPal",
+      "mtnMoney": "MTN Mobile Money",
+      "mtnMobileMoney": "MTN Mobile Money",
+      "card": "Carte de crédit/débit",
+      "cash": "Espèces",
+      "bank": "Virement bancaire"
+    },
+    "pay": "Payer",
+    "cancel": "Annuler",
+    "securityMessage": "Votre paiement est sécurisé et crypté. Nous ne stockons jamais vos détails de paiement."
   },
   "profile": {
     "title": "Profil",

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { MapPin, Loader2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { loadGoogleMapsAPI } from "@/lib/google-maps-loader"
 
 // Declare google global
 declare global {
@@ -22,6 +23,10 @@ interface MapPickerProps {
 export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAddress }: MapPickerProps) {
   const mapRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const mapInstanceRef = useRef<google.maps.Map | null>(null)
+  const markerInstanceRef = useRef<google.maps.Marker | null>(null)
+  const autocompleteInstanceRef = useRef<google.maps.places.Autocomplete | null>(null)
+  
   const [address, setAddress] = useState(initialAddress || "")
   const [isLoading, setIsLoading] = useState(false)
   const [coordinates, setCoordinates] = useState({
@@ -33,44 +38,18 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
   const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
 
   useEffect(() => {
+    let mounted = true
+
     const initializeMap = async () => {
-      if (typeof window === "undefined" || !mapRef.current) return
+      if (typeof window === "undefined" || !mapRef.current || !mounted) return
 
       setIsLoading(true)
 
       try {
-        // Load Google Maps script if not already loaded
-        if (!window.google?.maps) {
-          // Check if script is already being loaded
-          const existingScript = document.querySelector('script[src*="maps.googleapis.com"]')
-          
-          if (!existingScript) {
-            const script = document.createElement('script')
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`
-            script.async = true
-            script.defer = true
-            
-            await new Promise<void>((resolve, reject) => {
-              // Create global callback function
-              (window as any).initGoogleMaps = () => {
-                delete (window as any).initGoogleMaps // Cleanup
-                resolve()
-              }
-              script.onerror = () => reject(new Error('Failed to load Google Maps'))
-              document.head.appendChild(script)
-            })
-          } else {
-            // Script is loading, wait for it to be ready
-            await new Promise<void>((resolve) => {
-              const checkGoogleMaps = setInterval(() => {
-                if (window.google?.maps?.Map) {
-                  clearInterval(checkGoogleMaps)
-                  resolve()
-                }
-              }, 100)
-            })
-          }
-        }
+        // Load Google Maps using shared loader
+        await loadGoogleMapsAPI()
+
+        if (!mounted) return
 
         // Initialize map
         const initialPosition = { 
@@ -86,33 +65,38 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
           fullscreenControl: true,
         })
 
+        if (!mounted) return
+        mapInstanceRef.current = googleMap
         setMap(googleMap)
 
         // Add initial marker if coordinates exist
-        if (initialLat && initialLng) {
+        if (initialLat && initialLng && mounted) {
           const googleMarker = new google.maps.Marker({
             position: initialPosition,
             map: googleMap,
             draggable: true,
           })
 
-          setMarker(googleMarker)
+          if (mounted) {
+            markerInstanceRef.current = googleMarker
+            setMarker(googleMarker)
 
-          // Handle marker drag
-          googleMarker.addListener("dragend", async () => {
-            const position = googleMarker.getPosition()
-            if (position) {
-              const lat = position.lat()
-              const lng = position.lng()
-              setCoordinates({ lat, lng })
-              await reverseGeocode(lat, lng)
-            }
-          })
+            // Handle marker drag
+            googleMarker.addListener("dragend", async () => {
+              const position = googleMarker.getPosition()
+              if (position && mounted) {
+                const lat = position.lat()
+                const lng = position.lng()
+                setCoordinates({ lat, lng })
+                await reverseGeocode(lat, lng)
+              }
+            })
+          }
         }
 
         // Add click listener to map
         googleMap.addListener("click", async (e: google.maps.MapMouseEvent) => {
-          if (e.latLng) {
+          if (e.latLng && mounted) {
             const lat = e.latLng.lat()
             const lng = e.latLng.lng()
             
@@ -128,12 +112,15 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
                 draggable: true,
               })
 
-              setMarker(newMarker)
+              if (mounted) {
+                markerInstanceRef.current = newMarker
+                setMarker(newMarker)
+              }
 
               // Handle marker drag
               newMarker.addListener("dragend", async () => {
                 const position = newMarker.getPosition()
-                if (position) {
+                if (position && mounted) {
                   const lat = position.lat()
                   const lng = position.lng()
                   setCoordinates({ lat, lng })
@@ -147,19 +134,22 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
         })
 
         // Initialize autocomplete for input
-        if (inputRef.current) {
+        if (inputRef.current && mounted) {
           const autocompleteInstance = new google.maps.places.Autocomplete(inputRef.current, {
             fields: ["formatted_address", "geometry", "name"],
             types: ["address"],
           })
 
-          setAutocomplete(autocompleteInstance)
+          if (mounted) {
+            autocompleteInstanceRef.current = autocompleteInstance
+            setAutocomplete(autocompleteInstance)
+          }
 
           // Handle place selection from autocomplete
           autocompleteInstance.addListener("place_changed", () => {
             const place = autocompleteInstance.getPlace()
 
-            if (place.geometry?.location) {
+            if (place.geometry?.location && mounted) {
               const lat = place.geometry.location.lat()
               const lng = place.geometry.location.lng()
               const addr = place.formatted_address || place.name || ""
@@ -182,11 +172,14 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
                   draggable: true,
                 })
 
-                setMarker(newMarker)
+                if (mounted) {
+                  markerInstanceRef.current = newMarker
+                  setMarker(newMarker)
+                }
 
                 newMarker.addListener("dragend", async () => {
                   const position = newMarker.getPosition()
-                  if (position) {
+                  if (position && mounted) {
                     const lat = position.lat()
                     const lng = position.lng()
                     setCoordinates({ lat, lng })
@@ -200,11 +193,47 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
       } catch (error) {
         console.error("Error loading Google Maps:", error)
       } finally {
-        setIsLoading(false)
+        if (mounted) setIsLoading(false)
       }
     }
 
     initializeMap()
+
+    // Cleanup function
+    return () => {
+      mounted = false
+      
+      // Clean up marker
+      if (markerInstanceRef.current) {
+        try {
+          google.maps.event.clearInstanceListeners(markerInstanceRef.current)
+          markerInstanceRef.current.setMap(null)
+          markerInstanceRef.current = null
+        } catch (error) {
+          console.error("Error cleaning up marker:", error)
+        }
+      }
+      
+      // Clean up map
+      if (mapInstanceRef.current) {
+        try {
+          google.maps.event.clearInstanceListeners(mapInstanceRef.current)
+          mapInstanceRef.current = null
+        } catch (error) {
+          console.error("Error cleaning up map:", error)
+        }
+      }
+      
+      // Clean up autocomplete
+      if (autocompleteInstanceRef.current) {
+        try {
+          google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current)
+          autocompleteInstanceRef.current = null
+        } catch (error) {
+          console.error("Error cleaning up autocomplete:", error)
+        }
+      }
+    }
   }, [])
 
   // Reverse geocoding function

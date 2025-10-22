@@ -264,7 +264,6 @@
     "createRequestDescription": "Submit a maintenance request for your property",
     "newRequest": "New Request",
     "property": "Property",
-    "requestDetails": "Request Details",
     "requestTitle": "Request Title",
     "requestTitlePlaceholder": "Leaking faucet in bathroom",
     "description": "Description",
@@ -350,11 +349,13 @@
     "title": "Payment History",
     "makePayment": "Make Payment",
     "completePayment": "Complete Payment",
+    "completePaymentDescription": "Choose your payment method and complete the transaction securely",
     "paymentMethod": "Payment Method",
     "amount": "Amount",
     "paypal": "PayPal",
     "mtnMoney": "MTN Mobile Money",
     "phoneNumber": "Phone Number",
+    "phoneNumberHint": "Enter your MTN Mobile Money registered phone number",
     "processing": "Processing...",
     "payNow": "Pay Now",
     "transactionId": "Transaction ID",
@@ -375,7 +376,25 @@
     "deposit": "Deposit",
     "enterPhone": "Enter your MTN Mobile Money registered phone number",
     "securePayment": "Your payment is secure and encrypted. We never store your payment details.",
-    "generalTransaction": "General Transaction"
+    "generalTransaction": "General Transaction",
+    "transactionTypes": {
+      "rent": "Rent Payment",
+      "sale": "Sale Payment",
+      "maintenance": "Maintenance Payment",
+      "deposit": "Deposit",
+      "general": "General Transaction"
+    },
+    "methods": {
+      "paypal": "PayPal",
+      "mtnMoney": "MTN Mobile Money",
+      "mtnMobileMoney": "MTN Mobile Money",
+      "card": "Credit/Debit Card",
+      "cash": "Cash",
+      "bank": "Bank Transfer"
+    },
+    "pay": "Pay",
+    "cancel": "Cancel",
+    "securityMessage": "Your payment is secure and encrypted. We never store your payment details."
   },
   "profile": {
     "title": "Profile",

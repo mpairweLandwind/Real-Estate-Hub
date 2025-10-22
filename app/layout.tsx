@@ -24,6 +24,11 @@ export const metadata: Metadata = {
   title: "EstateHub - Premium Real Estate & Maintenance",
   description: "Find your perfect property or manage maintenance with ease",
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+  },
 }
 
 export default async function RootLayout({
