@@ -16,11 +16,11 @@ interface ImageUploadProps {
   folder?: "properties" | "maintenance"
 }
 
-export function ImageUpload({ 
-  images, 
-  onImagesChange, 
+export function ImageUpload({
+  images,
+  onImagesChange,
   maxImages = 6,
-  folder = "properties" 
+  folder = "properties",
 }: ImageUploadProps) {
   const t = useTranslations()
   const [uploading, setUploading] = useState(false)
@@ -39,14 +39,14 @@ export function ImageUpload({
     }
 
     const filesToUpload = Array.from(files).slice(0, remainingSlots)
-    
+
     setUploading(true)
     const uploadedUrls: string[] = []
 
     try {
       for (let i = 0; i < filesToUpload.length; i++) {
         const file = filesToUpload[i]
-        
+
         // Validate file type
         if (!file.type.startsWith("image/")) {
           toast.error(t("messages.error"), {
@@ -132,7 +132,7 @@ export function ImageUpload({
 
       const newImages = images.filter((_, i) => i !== index)
       onImagesChange(newImages)
-      
+
       toast.success(t("messages.success"), {
         description: "Image removed successfully",
       })
@@ -200,7 +200,10 @@ export function ImageUpload({
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {images.map((imageUrl, index) => (
-            <div key={index} className="relative group rounded-lg overflow-hidden border border-border">
+            <div
+              key={index}
+              className="relative group rounded-lg overflow-hidden border border-border"
+            >
               <img
                 src={imageUrl}
                 alt={`Upload ${index + 1}`}

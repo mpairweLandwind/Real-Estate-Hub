@@ -10,8 +10,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/components/ui/toast"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useToast } from "@/hooks/use-toast"
 import { profileSchema } from "@/lib/validations"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -22,7 +28,7 @@ export default function EditProfilePage() {
   const t = useTranslations("profile")
   const router = useRouter()
   const supabase = createClient()
-  const { addToast } = useToast()
+  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -39,7 +45,11 @@ export default function EditProfilePage() {
       } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single()
 
       if (profile) {
         setFormData({
@@ -81,10 +91,10 @@ export default function EditProfilePage() {
 
       if (updateError) throw updateError
 
-      addToast({
+      toast({
         title: "Success!",
         description: "Profile updated successfully",
-        variant: "success",
+        // variant: "default", // success not available in Radix toast
       })
 
       setTimeout(() => {
@@ -101,10 +111,10 @@ export default function EditProfilePage() {
         setErrors(newErrors)
       }
 
-      addToast({
+      toast({
         title: "Error",
         description: err.message || "Failed to update profile",
-        variant: "error",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -168,7 +178,9 @@ export default function EditProfilePage() {
                     <SelectItem value="tenant">{t("userTypes.tenant")}</SelectItem>
                     <SelectItem value="owner">{t("userTypes.owner")}</SelectItem>
                     <SelectItem value="agent">{t("userTypes.agent")}</SelectItem>
-                    <SelectItem value="maintenance_provider">{t("userTypes.maintenanceProvider")}</SelectItem>
+                    <SelectItem value="maintenance_provider">
+                      {t("userTypes.maintenanceProvider")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -4,7 +4,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { PropertySearchMap } from "@/components/property-search-map"
 import { Building2, Bed, Bath, Maximize, MapPin, Search } from "lucide-react"
 import Link from "next/link"
@@ -121,9 +127,14 @@ export default async function BrowsePage({
               </Card>
             ) : (
               <>
-                <p className="text-sm text-muted-foreground">{t("resultsCount", { count: properties.length })}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("resultsCount", { count: properties.length })}
+                </p>
                 {properties.map((property) => (
-                  <Card key={property.id} className="overflow-hidden hover:border-primary/50 transition-colors">
+                  <Card
+                    key={property.id}
+                    className="overflow-hidden hover:border-primary/50 transition-colors"
+                  >
                     <div className="flex flex-col sm:flex-row">
                       <div className="sm:w-48 aspect-video sm:aspect-square bg-muted flex items-center justify-center flex-shrink-0">
                         <Building2 className="h-12 w-12 text-muted-foreground" />
@@ -131,7 +142,9 @@ export default async function BrowsePage({
                       <div className="flex-1 p-4">
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div className="flex-1">
-                            <h3 className="font-serif font-bold text-lg line-clamp-1">{property.title}</h3>
+                            <h3 className="font-serif font-bold text-lg line-clamp-1">
+                              {property.title}
+                            </h3>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                               <MapPin className="h-3 w-3" />
                               <span>
@@ -171,9 +184,13 @@ export default async function BrowsePage({
 
                         <div className="flex items-center justify-between pt-3 border-t border-border">
                           <div>
-                            <p className="text-2xl font-bold text-primary">${property.price.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-primary">
+                              ${property.price.toLocaleString()}
+                            </p>
                             <p className="text-xs text-muted-foreground">
-                              {property.listing_type === "rent" ? t("perMonth") : property.listing_type}
+                              {property.listing_type === "rent"
+                                ? t("perMonth")
+                                : property.listing_type}
                             </p>
                           </div>
                           <Link href={`/browse/${property.id}`}>

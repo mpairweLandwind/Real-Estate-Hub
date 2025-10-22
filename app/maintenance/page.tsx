@@ -135,18 +135,24 @@ export default async function MaintenancePage() {
                     {request.estimated_cost && (
                       <div>
                         <p className="text-sm text-muted-foreground mb-1">{t("estimatedCost")}</p>
-                        <p className="font-medium text-primary">${request.estimated_cost.toLocaleString()}</p>
+                        <p className="font-medium text-primary">
+                          ${request.estimated_cost.toLocaleString()}
+                        </p>
                       </div>
                     )}
                     {request.scheduled_date && (
                       <div>
                         <p className="text-sm text-muted-foreground mb-1">{t("scheduled")}</p>
-                        <p className="font-medium">{new Date(request.scheduled_date).toLocaleDateString()}</p>
+                        <p className="font-medium">
+                          {new Date(request.scheduled_date).toLocaleDateString()}
+                        </p>
                       </div>
                     )}
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">{t("created")}</p>
-                      <p className="font-medium">{new Date(request.created_at).toLocaleDateString()}</p>
+                      <p className="font-medium">
+                        {new Date(request.created_at).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
 

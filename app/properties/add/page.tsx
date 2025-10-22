@@ -11,11 +11,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { MapPicker } from "@/components/map-picker"
 import { ImageUpload } from "@/components/image-upload"
 import { FormStepIndicator } from "@/components/form-step-indicator"
-import { useToast } from "@/components/ui/toast"
+import { useToast } from "@/hooks/use-toast"
 import { propertySchema } from "@/lib/validations"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import Link from "next/link"
@@ -32,7 +38,7 @@ const STEPS = [
 export default function AddPropertyPage() {
   const router = useRouter()
   const supabase = createClient()
-  const { addToast } = useToast()
+  const { toast } = useToast()
   const [currentStep, setCurrentStep] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -63,12 +69,14 @@ export default function AddPropertyPage() {
     try {
       if (step === 0) {
         // Basic Info validation
-        propertySchema.pick({ title: true, propertyType: true, listingType: true, price: true }).parse({
-          title: formData.title,
-          propertyType: formData.propertyType,
-          listingType: formData.listingType,
-          price: formData.price ? Number.parseFloat(formData.price) : 0,
-        })
+        propertySchema
+          .pick({ title: true, propertyType: true, listingType: true, price: true })
+          .parse({
+            title: formData.title,
+            propertyType: formData.propertyType,
+            listingType: formData.listingType,
+            price: formData.price ? Number.parseFloat(formData.price) : 0,
+          })
       } else if (step === 1) {
         // Specifications validation
         const specs = {
@@ -79,20 +87,22 @@ export default function AddPropertyPage() {
         propertySchema.pick({ bedrooms: true, bathrooms: true, areaSqft: true }).parse(specs)
       } else if (step === 2) {
         // Location validation
-        propertySchema.pick({ address: true, city: true, country: true, latitude: true, longitude: true }).parse({
-          address: formData.address,
-          city: formData.city,
-          country: formData.country,
-          latitude: formData.latitude,
-          longitude: formData.longitude,
-        })
+        propertySchema
+          .pick({ address: true, city: true, country: true, latitude: true, longitude: true })
+          .parse({
+            address: formData.address,
+            city: formData.city,
+            country: formData.country,
+            latitude: formData.latitude,
+            longitude: formData.longitude,
+          })
         if (formData.latitude === 0 && formData.longitude === 0) {
           newErrors.location = "Please select a location on the map"
         }
       } else if (step === 3) {
         // Images validation - at least one image is recommended but not required
         if (images.length === 0) {
-          addToast({
+          toast({
             title: "No Images",
             description: "Consider adding at least one image to attract more viewers",
             variant: "default",
@@ -117,10 +127,10 @@ export default function AddPropertyPage() {
     if (validateStep(currentStep)) {
       setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1))
     } else {
-      addToast({
+      toast({
         title: "Validation Error",
         description: "Please fix the errors before continuing",
-        variant: "error",
+        variant: "destructive",
       })
     }
   }
@@ -143,10 +153,10 @@ export default function AddPropertyPage() {
 
     // Validate all steps
     if (!validateStep(0) || !validateStep(1) || !validateStep(2)) {
-      addToast({
+      toast({
         title: "Validation Error",
         description: "Please complete all required fields correctly",
-        variant: "error",
+        variant: "destructive",
       })
       return
     }
@@ -178,25 +188,28 @@ export default function AddPropertyPage() {
         longitude: formData.longitude,
       })
 
-      const { data: propertyData, error: insertError } = await supabase.from("properties").insert({
-        owner_id: user.id,
-        title: validatedData.title,
-        description: validatedData.description,
-        property_type: validatedData.propertyType,
-        listing_type: validatedData.listingType,
-        price: validatedData.price,
-        bedrooms: validatedData.bedrooms,
-        bathrooms: validatedData.bathrooms,
-        area_sqft: validatedData.areaSqft,
-        address: validatedData.address,
-        city: validatedData.city,
-        state: validatedData.state,
-        country: validatedData.country,
-        postal_code: validatedData.postalCode,
-        latitude: validatedData.latitude,
-        longitude: validatedData.longitude,
-        status: "available",
-      }).select()
+      const { data: propertyData, error: insertError } = await supabase
+        .from("properties")
+        .insert({
+          owner_id: user.id,
+          title: validatedData.title,
+          description: validatedData.description,
+          property_type: validatedData.propertyType,
+          listing_type: validatedData.listingType,
+          price: validatedData.price,
+          bedrooms: validatedData.bedrooms,
+          bathrooms: validatedData.bathrooms,
+          area_sqft: validatedData.areaSqft,
+          address: validatedData.address,
+          city: validatedData.city,
+          state: validatedData.state,
+          country: validatedData.country,
+          postal_code: validatedData.postalCode,
+          latitude: validatedData.latitude,
+          longitude: validatedData.longitude,
+          status: "available",
+        })
+        .select()
 
       if (insertError) throw insertError
 
@@ -209,9 +222,7 @@ export default function AddPropertyPage() {
           display_order: index,
         }))
 
-        const { error: imagesError } = await supabase
-          .from("property_images")
-          .insert(imageInserts)
+        const { error: imagesError } = await supabase.from("property_images").insert(imageInserts)
 
         if (imagesError) {
           console.error("Error inserting images:", imagesError)
@@ -219,19 +230,19 @@ export default function AddPropertyPage() {
         }
       }
 
-      addToast({
+      toast({
         title: "Success!",
         description: "Property added successfully",
-        variant: "success",
+        // variant: "default", // success not available in Radix toast
       })
 
       router.push("/properties")
     } catch (err: any) {
       console.error("[v0] Error adding property:", err)
-      addToast({
+      toast({
         title: "Error",
         description: err.message || "Failed to add property",
-        variant: "error",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -282,9 +293,13 @@ export default function AddPropertyPage() {
                       placeholder="Describe your property..."
                       rows={4}
                       value={formData.description}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, description: e.target.value }))
+                      }
                     />
-                    {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
+                    {errors.description && (
+                      <p className="text-sm text-destructive">{errors.description}</p>
+                    )}
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -292,7 +307,9 @@ export default function AddPropertyPage() {
                       <Label htmlFor="propertyType">Property Type *</Label>
                       <Select
                         value={formData.propertyType}
-                        onValueChange={(value) => setFormData((prev) => ({ ...prev, propertyType: value }))}
+                        onValueChange={(value) =>
+                          setFormData((prev) => ({ ...prev, propertyType: value }))
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -311,7 +328,9 @@ export default function AddPropertyPage() {
                       <Label htmlFor="listingType">Listing Type *</Label>
                       <Select
                         value={formData.listingType}
-                        onValueChange={(value) => setFormData((prev) => ({ ...prev, listingType: value }))}
+                        onValueChange={(value) =>
+                          setFormData((prev) => ({ ...prev, listingType: value }))
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -349,9 +368,13 @@ export default function AddPropertyPage() {
                       type="number"
                       placeholder="1200"
                       value={formData.areaSqft}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, areaSqft: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, areaSqft: e.target.value }))
+                      }
                     />
-                    {errors.areaSqft && <p className="text-sm text-destructive">{errors.areaSqft}</p>}
+                    {errors.areaSqft && (
+                      <p className="text-sm text-destructive">{errors.areaSqft}</p>
+                    )}
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -362,9 +385,13 @@ export default function AddPropertyPage() {
                         type="number"
                         placeholder="3"
                         value={formData.bedrooms}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, bedrooms: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, bedrooms: e.target.value }))
+                        }
                       />
-                      {errors.bedrooms && <p className="text-sm text-destructive">{errors.bedrooms}</p>}
+                      {errors.bedrooms && (
+                        <p className="text-sm text-destructive">{errors.bedrooms}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -374,9 +401,13 @@ export default function AddPropertyPage() {
                         type="number"
                         placeholder="2"
                         value={formData.bathrooms}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, bathrooms: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, bathrooms: e.target.value }))
+                        }
                       />
-                      {errors.bathrooms && <p className="text-sm text-destructive">{errors.bathrooms}</p>}
+                      {errors.bathrooms && (
+                        <p className="text-sm text-destructive">{errors.bathrooms}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -403,7 +434,9 @@ export default function AddPropertyPage() {
                         id="state"
                         placeholder="NY"
                         value={formData.state}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, state: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, state: e.target.value }))
+                        }
                       />
                     </div>
 
@@ -413,9 +446,13 @@ export default function AddPropertyPage() {
                         id="country"
                         placeholder="USA"
                         value={formData.country}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, country: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, country: e.target.value }))
+                        }
                       />
-                      {errors.country && <p className="text-sm text-destructive">{errors.country}</p>}
+                      {errors.country && (
+                        <p className="text-sm text-destructive">{errors.country}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -424,7 +461,9 @@ export default function AddPropertyPage() {
                         id="postalCode"
                         placeholder="10001"
                         value={formData.postalCode}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, postalCode: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, postalCode: e.target.value }))
+                        }
                       />
                     </div>
                   </div>
@@ -437,7 +476,9 @@ export default function AddPropertyPage() {
                       initialLng={formData.longitude}
                       initialAddress={formData.address}
                     />
-                    {errors.location && <p className="text-sm text-destructive">{errors.location}</p>}
+                    {errors.location && (
+                      <p className="text-sm text-destructive">{errors.location}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -448,10 +489,11 @@ export default function AddPropertyPage() {
                   <div className="space-y-2">
                     <Label>Property Images</Label>
                     <p className="text-sm text-muted-foreground">
-                      Upload high-quality images of your property. The first image will be used as the primary photo.
+                      Upload high-quality images of your property. The first image will be used as
+                      the primary photo.
                     </p>
                   </div>
-                  
+
                   <ImageUpload
                     images={images}
                     onImagesChange={setImages}
@@ -474,7 +516,9 @@ export default function AddPropertyPage() {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Price</p>
-                        <p className="font-medium">${Number.parseFloat(formData.price || "0").toLocaleString()}</p>
+                        <p className="font-medium">
+                          ${Number.parseFloat(formData.price || "0").toLocaleString()}
+                        </p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Property Type</p>
@@ -519,10 +563,15 @@ export default function AddPropertyPage() {
 
                     {images.length > 0 && (
                       <div>
-                        <p className="text-sm text-muted-foreground mb-2">Images ({images.length})</p>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Images ({images.length})
+                        </p>
                         <div className="grid grid-cols-3 gap-2">
                           {images.slice(0, 6).map((imageUrl, index) => (
-                            <div key={index} className="relative rounded-lg overflow-hidden border border-border">
+                            <div
+                              key={index}
+                              className="relative rounded-lg overflow-hidden border border-border"
+                            >
                               <img
                                 src={imageUrl}
                                 alt={`Property ${index + 1}`}
@@ -544,7 +593,12 @@ export default function AddPropertyPage() {
 
               <div className="flex gap-4 pt-6 border-t border-border">
                 {currentStep > 0 && (
-                  <Button type="button" variant="outline" onClick={handleBack} className="gap-2 bg-transparent">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleBack}
+                    className="gap-2 bg-transparent"
+                  >
                     <ArrowLeft className="h-4 w-4" />
                     Back
                   </Button>

@@ -40,7 +40,8 @@ export default async function ProfilePage() {
     .eq("user_id", user.id)
     .eq("status", "completed")
 
-  const totalSpent = transactions?.reduce((sum, t) => sum + Number.parseFloat(t.amount.toString()), 0) || 0
+  const totalSpent =
+    transactions?.reduce((sum, t) => sum + Number.parseFloat(t.amount.toString()), 0) || 0
 
   return (
     <div className="min-h-screen bg-background">
@@ -66,7 +67,9 @@ export default async function ProfilePage() {
                     <User className="h-10 w-10 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-2xl font-serif font-bold">{profile?.full_name || t("user")}</h3>
+                    <h3 className="text-2xl font-serif font-bold">
+                      {profile?.full_name || t("user")}
+                    </h3>
                     <Badge variant="secondary" className="mt-1 capitalize">
                       {profile?.user_type || t("user")}
                     </Badge>
@@ -151,7 +154,9 @@ export default async function ProfilePage() {
                     <p className="text-sm text-muted-foreground">{t("requestMaintenance")}</p>
                   </div>
                   <div className="text-center p-4 rounded-lg border border-border">
-                    <p className="text-3xl font-bold text-primary mb-1">${totalSpent.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-primary mb-1">
+                      ${totalSpent.toLocaleString()}
+                    </p>
                     <p className="text-sm text-muted-foreground">{t("totalSpent")}</p>
                   </div>
                 </div>

@@ -20,14 +20,19 @@ interface MapPickerProps {
   initialAddress?: string
 }
 
-export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAddress }: MapPickerProps) {
+export function MapPicker({
+  onLocationSelect,
+  initialLat,
+  initialLng,
+  initialAddress,
+}: MapPickerProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const markerInstanceRef = useRef<google.maps.Marker | null>(null)
   const autocompleteInstanceRef = useRef<google.maps.places.Autocomplete | null>(null)
-  
+
   const [address, setAddress] = useState(initialAddress || "")
   const [isLoading, setIsLoading] = useState(false)
   const [coordinates, setCoordinates] = useState({
@@ -53,9 +58,9 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
         if (!mounted) return
 
         // Initialize map
-        const initialPosition = { 
-          lat: initialLat || 0, 
-          lng: initialLng || 0 
+        const initialPosition = {
+          lat: initialLat || 0,
+          lng: initialLng || 0,
         }
 
         const googleMap = new google.maps.Map(mapRef.current, {
@@ -100,7 +105,7 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
           if (e.latLng && mounted) {
             const lat = e.latLng.lat()
             const lng = e.latLng.lng()
-            
+
             setCoordinates({ lat, lng })
 
             // Update or create marker
@@ -203,7 +208,7 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
     // Cleanup function
     return () => {
       mounted = false
-      
+
       // Clean up marker
       if (markerInstanceRef.current) {
         try {
@@ -214,7 +219,7 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
           console.error("Error cleaning up marker:", error)
         }
       }
-      
+
       // Clean up autocomplete
       if (autocompleteInstanceRef.current) {
         try {
@@ -224,7 +229,7 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
           console.error("Error cleaning up autocomplete:", error)
         }
       }
-      
+
       // Clean up map - must be last
       if (mapInstanceRef.current) {
         try {
@@ -234,11 +239,11 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
           console.error("Error cleaning up map:", error)
         }
       }
-      
+
       // Clear the map container to prevent React removeChild errors
       if (mapRef.current) {
         try {
-          mapRef.current.innerHTML = ''
+          mapRef.current.innerHTML = ""
         } catch (error) {
           console.error("Error clearing map container:", error)
         }
@@ -297,7 +302,7 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
         </p>
       </div>
 
-      <div 
+      <div
         ref={mapContainerRef}
         className="h-[400px] w-full rounded-lg border border-border overflow-hidden bg-muted relative"
       >
@@ -316,11 +321,7 @@ export function MapPicker({ onLocationSelect, initialLat, initialLng, initialAdd
           <p className="text-xs text-muted-foreground">
             Coordinates: {coordinates.lat.toFixed(6)}, {coordinates.lng.toFixed(6)}
           </p>
-          {address && (
-            <p className="text-xs text-muted-foreground mt-1">
-              Address: {address}
-            </p>
-          )}
+          {address && <p className="text-xs text-muted-foreground mt-1">Address: {address}</p>}
         </div>
       )}
     </div>

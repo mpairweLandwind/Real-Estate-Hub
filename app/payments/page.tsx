@@ -107,7 +107,9 @@ export default async function PaymentsPage() {
                   <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">{t("amount")}</p>
-                      <p className="text-xl font-bold text-primary">${transaction.amount.toLocaleString()}</p>
+                      <p className="text-xl font-bold text-primary">
+                        ${transaction.amount.toLocaleString()}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">{t("type")}</p>
@@ -115,7 +117,9 @@ export default async function PaymentsPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">{t("paymentMethod")}</p>
-                      <p className="font-medium capitalize">{transaction.payment_method.replace("_", " ")}</p>
+                      <p className="font-medium capitalize">
+                        {transaction.payment_method.replace("_", " ")}
+                      </p>
                     </div>
                     {transaction.payment_reference && (
                       <div>

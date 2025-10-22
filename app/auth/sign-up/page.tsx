@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -38,7 +44,9 @@ export default function SignUpPage() {
         email,
         password,
         options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`,
+          emailRedirectTo:
+            process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
+            `${window.location.origin}/dashboard`,
           data: {
             full_name: fullName,
             user_type: userType,
@@ -116,7 +124,9 @@ export default function SignUpPage() {
                         <SelectItem value="tenant">{t("auth.tenant")}</SelectItem>
                         <SelectItem value="owner">{t("auth.owner")}</SelectItem>
                         <SelectItem value="agent">{t("auth.agent")}</SelectItem>
-                        <SelectItem value="maintenance_provider">{t("auth.maintenanceProvider")}</SelectItem>
+                        <SelectItem value="maintenance_provider">
+                          {t("auth.maintenanceProvider")}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -127,7 +137,10 @@ export default function SignUpPage() {
                 </div>
                 <div className="mt-4 text-center text-sm">
                   {t("auth.alreadyHaveAccount")}{" "}
-                  <Link href="/auth/login" className="text-primary underline underline-offset-4 hover:text-primary/80">
+                  <Link
+                    href="/auth/login"
+                    className="text-primary underline underline-offset-4 hover:text-primary/80"
+                  >
                     {t("auth.login")}
                   </Link>
                 </div>

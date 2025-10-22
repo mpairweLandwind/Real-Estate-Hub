@@ -68,16 +68,25 @@ export default async function PropertiesPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <Card key={property.id} className="overflow-hidden hover:border-primary/50 transition-colors">
+              <Card
+                key={property.id}
+                className="overflow-hidden hover:border-primary/50 transition-colors"
+              >
                 <div className="aspect-video bg-muted flex items-center justify-center">
                   <Building2 className="h-12 w-12 text-muted-foreground" />
                 </div>
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <CardTitle className="text-xl font-serif line-clamp-1">{property.title}</CardTitle>
-                    <Badge variant={property.status === "available" ? "default" : "secondary"}>{property.status}</Badge>
+                    <CardTitle className="text-xl font-serif line-clamp-1">
+                      {property.title}
+                    </CardTitle>
+                    <Badge variant={property.status === "available" ? "default" : "secondary"}>
+                      {property.status}
+                    </Badge>
                   </div>
-                  <CardDescription className="line-clamp-2">{property.description || "No description"}</CardDescription>
+                  <CardDescription className="line-clamp-2">
+                    {property.description || "No description"}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -110,7 +119,9 @@ export default async function PropertiesPage() {
 
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div>
-                      <p className="text-2xl font-bold text-primary">${property.price.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-primary">
+                        ${property.price.toLocaleString()}
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         {property.listing_type === "rent" ? t("perMonth") : property.listing_type}
                       </p>

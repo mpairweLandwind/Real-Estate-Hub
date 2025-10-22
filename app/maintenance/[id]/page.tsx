@@ -9,17 +9,33 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { PaymentModal } from "@/components/payment-modal"
 import { ConfirmDialog } from "@/components/confirm-dialog"
-import { useToast } from "@/components/ui/toast"
-import { Wrench, ArrowLeft, MapPin, Calendar, DollarSign, Edit, Trash2, Save, X } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import {
+  Wrench,
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  DollarSign,
+  Edit,
+  Trash2,
+  Save,
+  X,
+} from "lucide-react"
 import Link from "next/link"
 
 export default function MaintenanceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const supabase = createClient()
-  const { addToast } = useToast()
+  const { toast } = useToast()
   const [request, setRequest] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
@@ -53,16 +69,16 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
       const { data, error } = await supabase
         .from("maintenance_requests")
         .select(
-          "*, properties(title, address, city, country), profiles!maintenance_requests_requester_id_fkey(full_name)",
+          "*, properties(title, address, city, country), profiles!maintenance_requests_requester_id_fkey(full_name)"
         )
         .eq("id", resolvedParams.id)
         .single()
 
       if (error || !data) {
-        addToast({
+        toast({
           title: "Error",
           description: "Maintenance request not found",
-          variant: "error",
+          variant: "destructive",
         })
         router.push("/maintenance")
         return
@@ -74,7 +90,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
         priority: data.priority,
         estimatedCost: data.estimated_cost?.toString() || "",
         actualCost: data.actual_cost?.toString() || "",
-        scheduledDate: data.scheduled_date ? new Date(data.scheduled_date).toISOString().split("T")[0] : "",
+        scheduledDate: data.scheduled_date
+          ? new Date(data.scheduled_date).toISOString().split("T")[0]
+          : "",
       })
       setIsLoading(false)
     }
@@ -106,26 +124,26 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
       const { data: updatedData } = await supabase
         .from("maintenance_requests")
         .select(
-          "*, properties(title, address, city, country), profiles!maintenance_requests_requester_id_fkey(full_name)",
+          "*, properties(title, address, city, country), profiles!maintenance_requests_requester_id_fkey(full_name)"
         )
         .eq("id", requestId)
         .single()
 
       if (updatedData) setRequest(updatedData)
 
-      addToast({
+      toast({
         title: "Success!",
         description: "Maintenance request updated successfully",
-        variant: "success",
+        // variant: "default", // success not available in Radix toast
       })
 
       setIsEditing(false)
     } catch (err: any) {
       console.error("[v0] Error updating maintenance request:", err)
-      addToast({
+      toast({
         title: "Error",
         description: err.message || "Failed to update request",
-        variant: "error",
+        variant: "destructive",
       })
     } finally {
       setIsSaving(false)
@@ -141,19 +159,19 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
 
       if (error) throw error
 
-      addToast({
+      toast({
         title: "Success!",
         description: "Maintenance request deleted successfully",
-        variant: "success",
+        // variant: "default", // success not available in Radix toast
       })
 
       router.push("/maintenance")
     } catch (err: any) {
       console.error("[v0] Error deleting maintenance request:", err)
-      addToast({
+      toast({
         title: "Error",
         description: err.message || "Failed to delete request",
-        variant: "error",
+        variant: "destructive",
       })
     } finally {
       setIsDeleting(false)
@@ -209,7 +227,12 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
           <div className="flex gap-2">
             {!isEditing ? (
               <>
-                <Button variant="outline" size="sm" className="gap-2 bg-transparent" onClick={() => setIsEditing(true)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 bg-transparent"
+                  onClick={() => setIsEditing(true)}
+                >
                   <Edit className="h-4 w-4" />
                   Edit
                 </Button>
@@ -286,7 +309,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                       variant={getStatusBadge(isEditing ? editData.status : request.status)}
                       className="capitalize"
                     >
-                      {isEditing ? editData.status.replace("_", " ") : request.status.replace("_", " ")}
+                      {isEditing
+                        ? editData.status.replace("_", " ")
+                        : request.status.replace("_", " ")}
                     </Badge>
                   </div>
                 </div>
@@ -306,7 +331,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                           <Label htmlFor="status">Status</Label>
                           <Select
                             value={editData.status}
-                            onValueChange={(value) => setEditData((prev) => ({ ...prev, status: value }))}
+                            onValueChange={(value) =>
+                              setEditData((prev) => ({ ...prev, status: value }))
+                            }
                           >
                             <SelectTrigger>
                               <SelectValue />
@@ -324,7 +351,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                           <Label htmlFor="priority">Priority</Label>
                           <Select
                             value={editData.priority}
-                            onValueChange={(value) => setEditData((prev) => ({ ...prev, priority: value }))}
+                            onValueChange={(value) =>
+                              setEditData((prev) => ({ ...prev, priority: value }))
+                            }
                           >
                             <SelectTrigger>
                               <SelectValue />
@@ -345,7 +374,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                             type="number"
                             placeholder="500"
                             value={editData.estimatedCost}
-                            onChange={(e) => setEditData((prev) => ({ ...prev, estimatedCost: e.target.value }))}
+                            onChange={(e) =>
+                              setEditData((prev) => ({ ...prev, estimatedCost: e.target.value }))
+                            }
                           />
                         </div>
 
@@ -356,7 +387,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                             type="number"
                             placeholder="450"
                             value={editData.actualCost}
-                            onChange={(e) => setEditData((prev) => ({ ...prev, actualCost: e.target.value }))}
+                            onChange={(e) =>
+                              setEditData((prev) => ({ ...prev, actualCost: e.target.value }))
+                            }
                           />
                         </div>
 
@@ -366,7 +399,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                             id="scheduledDate"
                             type="date"
                             value={editData.scheduledDate}
-                            onChange={(e) => setEditData((prev) => ({ ...prev, scheduledDate: e.target.value }))}
+                            onChange={(e) =>
+                              setEditData((prev) => ({ ...prev, scheduledDate: e.target.value }))
+                            }
                           />
                         </div>
                       </div>
@@ -383,22 +418,30 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                       </div>
                       <div className="flex justify-between py-2 border-b border-border">
                         <span className="text-muted-foreground">Status</span>
-                        <span className="font-medium capitalize">{request.status.replace("_", " ")}</span>
+                        <span className="font-medium capitalize">
+                          {request.status.replace("_", " ")}
+                        </span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-border">
                         <span className="text-muted-foreground">Created</span>
-                        <span className="font-medium">{new Date(request.created_at).toLocaleDateString()}</span>
+                        <span className="font-medium">
+                          {new Date(request.created_at).toLocaleDateString()}
+                        </span>
                       </div>
                       {request.scheduled_date && (
                         <div className="flex justify-between py-2 border-b border-border">
                           <span className="text-muted-foreground">Scheduled</span>
-                          <span className="font-medium">{new Date(request.scheduled_date).toLocaleDateString()}</span>
+                          <span className="font-medium">
+                            {new Date(request.scheduled_date).toLocaleDateString()}
+                          </span>
                         </div>
                       )}
                       {request.completed_date && (
                         <div className="flex justify-between py-2 border-b border-border">
                           <span className="text-muted-foreground">Completed</span>
-                          <span className="font-medium">{new Date(request.completed_date).toLocaleDateString()}</span>
+                          <span className="font-medium">
+                            {new Date(request.completed_date).toLocaleDateString()}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -411,7 +454,8 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                   <div className="p-4 rounded-lg border border-border">
                     <p className="font-semibold mb-1">{request.properties?.title}</p>
                     <p className="text-sm text-muted-foreground">
-                      {request.properties?.address}, {request.properties?.city}, {request.properties?.country}
+                      {request.properties?.address}, {request.properties?.city},{" "}
+                      {request.properties?.country}
                     </p>
                   </div>
                 </div>
@@ -431,7 +475,10 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Estimated Cost</p>
                     <p className="text-2xl font-bold text-primary">
-                      ${Number.parseFloat(editData.estimatedCost || request.estimated_cost || "0").toLocaleString()}
+                      $
+                      {Number.parseFloat(
+                        editData.estimatedCost || request.estimated_cost || "0"
+                      ).toLocaleString()}
                     </p>
                   </div>
                 )}
@@ -439,7 +486,10 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Actual Cost</p>
                     <p className="text-2xl font-bold text-primary">
-                      ${Number.parseFloat(editData.actualCost || request.actual_cost || "0").toLocaleString()}
+                      $
+                      {Number.parseFloat(
+                        editData.actualCost || request.actual_cost || "0"
+                      ).toLocaleString()}
                     </p>
                   </div>
                 )}
@@ -489,7 +539,9 @@ export default function MaintenanceDetailPage({ params }: { params: Promise<{ id
                     <div>
                       <p className="text-sm font-medium">Scheduled Date</p>
                       <p className="text-sm text-muted-foreground">
-                        {new Date(editData.scheduledDate || request.scheduled_date).toLocaleDateString("en-US", {
+                        {new Date(
+                          editData.scheduledDate || request.scheduled_date
+                        ).toLocaleDateString("en-US", {
                           weekday: "long",
                           year: "numeric",
                           month: "long",

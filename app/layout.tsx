@@ -25,9 +25,7 @@ export const metadata: Metadata = {
   description: "Find your perfect property or manage maintenance with ease",
   generator: "v0.app",
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ],
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
 }
 

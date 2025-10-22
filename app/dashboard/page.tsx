@@ -39,7 +39,8 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .eq("status", "completed")
 
-  const totalRevenue = transactions?.reduce((sum, t) => sum + Number.parseFloat(t.amount.toString()), 0) || 0
+  const totalRevenue =
+    transactions?.reduce((sum, t) => sum + Number.parseFloat(t.amount.toString()), 0) || 0
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,7 +69,9 @@ export default async function DashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t("stats.maintenanceRequests")}</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {t("stats.maintenanceRequests")}
+              </CardTitle>
               <Wrench className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -84,7 +87,9 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">${totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground mt-1">{t("stats.completedTransactions")}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("stats.completedTransactions")}
+              </p>
             </CardContent>
           </Card>
 
@@ -140,9 +145,13 @@ export default async function DashboardPage() {
                   <Building2 className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold capitalize text-lg">{profile?.user_type || t("user")}</p>
+                  <p className="font-semibold capitalize text-lg">
+                    {profile?.user_type || t("user")}
+                  </p>
                   <p className="text-sm text-muted-foreground">
-                    {t("accountType.memberSince", { date: new Date(profile?.created_at || "").toLocaleDateString() })}
+                    {t("accountType.memberSince", {
+                      date: new Date(profile?.created_at || "").toLocaleDateString(),
+                    })}
                   </p>
                 </div>
               </div>

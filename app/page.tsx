@@ -64,8 +64,12 @@ export default function HomePage() {
       <section className="py-20 md:py-32 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">{t("home.features.title")}</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{t("home.features.subtitle")}</p>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
+              {t("home.features.title")}
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              {t("home.features.subtitle")}
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -73,7 +77,9 @@ export default function HomePage() {
               <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                 <MapPin className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold mb-2">{t("home.features.mapSearch.title")}</h3>
+              <h3 className="font-serif text-xl font-bold mb-2">
+                {t("home.features.mapSearch.title")}
+              </h3>
               <p className="text-muted-foreground">{t("home.features.mapSearch.description")}</p>
             </div>
 
@@ -81,7 +87,9 @@ export default function HomePage() {
               <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                 <Building2 className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold mb-2">{t("home.features.listings.title")}</h3>
+              <h3 className="font-serif text-xl font-bold mb-2">
+                {t("home.features.listings.title")}
+              </h3>
               <p className="text-muted-foreground">{t("home.features.listings.description")}</p>
             </div>
 
@@ -89,7 +97,9 @@ export default function HomePage() {
               <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                 <Wrench className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold mb-2">{t("home.features.maintenance.title")}</h3>
+              <h3 className="font-serif text-xl font-bold mb-2">
+                {t("home.features.maintenance.title")}
+              </h3>
               <p className="text-muted-foreground">{t("home.features.maintenance.description")}</p>
             </div>
 
@@ -97,7 +107,9 @@ export default function HomePage() {
               <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                 <Shield className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold mb-2">{t("home.features.payments.title")}</h3>
+              <h3 className="font-serif text-xl font-bold mb-2">
+                {t("home.features.payments.title")}
+              </h3>
               <p className="text-muted-foreground">{t("home.features.payments.description")}</p>
             </div>
 
@@ -105,7 +117,9 @@ export default function HomePage() {
               <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                 <TrendingUp className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold mb-2">{t("home.features.analytics.title")}</h3>
+              <h3 className="font-serif text-xl font-bold mb-2">
+                {t("home.features.analytics.title")}
+              </h3>
               <p className="text-muted-foreground">{t("home.features.analytics.description")}</p>
             </div>
 
@@ -113,7 +127,9 @@ export default function HomePage() {
               <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                 <Users className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold mb-2">{t("home.features.multiUser.title")}</h3>
+              <h3 className="font-serif text-xl font-bold mb-2">
+                {t("home.features.multiUser.title")}
+              </h3>
               <p className="text-muted-foreground">{t("home.features.multiUser.description")}</p>
             </div>
           </div>

@@ -11,11 +11,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { ImageUpload } from "@/components/image-upload"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MapPicker } from "@/components/map-picker"
-import { useToast } from "@/components/ui/toast"
+import { useToast } from "@/hooks/use-toast"
 import { maintenanceSchema } from "@/lib/validations"
 import { ArrowLeft, Building2, Plus } from "lucide-react"
 import Link from "next/link"
@@ -26,7 +32,7 @@ export default function CreateMaintenanceRequestPage() {
   const t = useTranslations("maintenance")
   const router = useRouter()
   const supabase = createClient()
-  const { addToast } = useToast()
+  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [properties, setProperties] = useState<any[]>([])
@@ -61,7 +67,10 @@ export default function CreateMaintenanceRequestPage() {
       } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data } = await supabase.from("properties").select("id, title, address, city").eq("owner_id", user.id)
+      const { data } = await supabase
+        .from("properties")
+        .select("id, title, address, city")
+        .eq("owner_id", user.id)
 
       if (data) setProperties(data)
     }
@@ -93,7 +102,12 @@ export default function CreateMaintenanceRequestPage() {
       // If creating new property, insert it first
       if (propertyMode === "new") {
         // Validate new property data
-        if (!newPropertyData.title || !newPropertyData.address || !newPropertyData.city || !newPropertyData.country) {
+        if (
+          !newPropertyData.title ||
+          !newPropertyData.address ||
+          !newPropertyData.city ||
+          !newPropertyData.country
+        ) {
           throw new Error("Please fill in all required property fields")
         }
 
@@ -164,10 +178,10 @@ export default function CreateMaintenanceRequestPage() {
 
       if (insertError) throw insertError
 
-      addToast({
+      toast({
         title: "Success!",
         description: "Maintenance request created successfully",
-        variant: "success",
+        // variant: "default", // success not available in Radix toast
       })
 
       router.push("/maintenance")
@@ -182,10 +196,10 @@ export default function CreateMaintenanceRequestPage() {
         setErrors(newErrors)
       }
 
-      addToast({
+      toast({
         title: "Error",
         description: err.message || "Failed to create request",
-        variant: "error",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -214,7 +228,10 @@ export default function CreateMaintenanceRequestPage() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Property Selection Tabs */}
-              <Tabs value={propertyMode} onValueChange={(value) => setPropertyMode(value as "existing" | "new")}>
+              <Tabs
+                value={propertyMode}
+                onValueChange={(value) => setPropertyMode(value as "existing" | "new")}
+              >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="existing" className="gap-2">
                     <Building2 className="h-4 w-4" />
@@ -231,14 +248,18 @@ export default function CreateMaintenanceRequestPage() {
                     <Label htmlFor="property">{t("property")} *</Label>
                     <Select
                       value={formData.propertyId}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, propertyId: value }))}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({ ...prev, propertyId: value }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue placeholder={t("selectProperty")} />
                       </SelectTrigger>
                       <SelectContent>
                         {properties.length === 0 ? (
-                          <div className="p-2 text-sm text-muted-foreground">{t("propertySelection.noProperties")}</div>
+                          <div className="p-2 text-sm text-muted-foreground">
+                            {t("propertySelection.noProperties")}
+                          </div>
                         ) : (
                           properties.map((property) => (
                             <SelectItem key={property.id} value={property.id}>
@@ -248,7 +269,9 @@ export default function CreateMaintenanceRequestPage() {
                         )}
                       </SelectContent>
                     </Select>
-                    {errors.propertyId && <p className="text-sm text-destructive">{errors.propertyId}</p>}
+                    {errors.propertyId && (
+                      <p className="text-sm text-destructive">{errors.propertyId}</p>
+                    )}
                     {properties.length === 0 && (
                       <p className="text-sm text-muted-foreground">
                         {t("propertySelection.noPropertiesHint")}
@@ -260,14 +283,18 @@ export default function CreateMaintenanceRequestPage() {
                 <TabsContent value="new" className="space-y-4 mt-6">
                   <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/50">
                     <h3 className="font-semibold text-sm">{t("propertySelection.registerNew")}</h3>
-                    
+
                     <div className="space-y-2">
-                      <Label htmlFor="newPropertyTitle">{t("propertySelection.propertyName")} *</Label>
+                      <Label htmlFor="newPropertyTitle">
+                        {t("propertySelection.propertyName")} *
+                      </Label>
                       <Input
                         id="newPropertyTitle"
                         placeholder={t("propertySelection.propertyNamePlaceholder")}
                         value={newPropertyData.title}
-                        onChange={(e) => setNewPropertyData((prev) => ({ ...prev, title: e.target.value }))}
+                        onChange={(e) =>
+                          setNewPropertyData((prev) => ({ ...prev, title: e.target.value }))
+                        }
                       />
                     </div>
 
@@ -275,16 +302,26 @@ export default function CreateMaintenanceRequestPage() {
                       <Label htmlFor="propertyType">{t("propertySelection.propertyType")} *</Label>
                       <Select
                         value={newPropertyData.propertyType}
-                        onValueChange={(value) => setNewPropertyData((prev) => ({ ...prev, propertyType: value }))}
+                        onValueChange={(value) =>
+                          setNewPropertyData((prev) => ({ ...prev, propertyType: value }))
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="apartment">{t("propertySelection.types.apartment")}</SelectItem>
-                          <SelectItem value="house">{t("propertySelection.types.house")}</SelectItem>
-                          <SelectItem value="commercial">{t("propertySelection.types.commercial")}</SelectItem>
-                          <SelectItem value="office">{t("propertySelection.types.office")}</SelectItem>
+                          <SelectItem value="apartment">
+                            {t("propertySelection.types.apartment")}
+                          </SelectItem>
+                          <SelectItem value="house">
+                            {t("propertySelection.types.house")}
+                          </SelectItem>
+                          <SelectItem value="commercial">
+                            {t("propertySelection.types.commercial")}
+                          </SelectItem>
+                          <SelectItem value="office">
+                            {t("propertySelection.types.office")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -296,7 +333,9 @@ export default function CreateMaintenanceRequestPage() {
                           id="city"
                           placeholder="New York"
                           value={newPropertyData.city}
-                          onChange={(e) => setNewPropertyData((prev) => ({ ...prev, city: e.target.value }))}
+                          onChange={(e) =>
+                            setNewPropertyData((prev) => ({ ...prev, city: e.target.value }))
+                          }
                         />
                       </div>
 
@@ -306,7 +345,9 @@ export default function CreateMaintenanceRequestPage() {
                           id="state"
                           placeholder="NY"
                           value={newPropertyData.state}
-                          onChange={(e) => setNewPropertyData((prev) => ({ ...prev, state: e.target.value }))}
+                          onChange={(e) =>
+                            setNewPropertyData((prev) => ({ ...prev, state: e.target.value }))
+                          }
                         />
                       </div>
 
@@ -316,7 +357,9 @@ export default function CreateMaintenanceRequestPage() {
                           id="country"
                           placeholder="USA"
                           value={newPropertyData.country}
-                          onChange={(e) => setNewPropertyData((prev) => ({ ...prev, country: e.target.value }))}
+                          onChange={(e) =>
+                            setNewPropertyData((prev) => ({ ...prev, country: e.target.value }))
+                          }
                         />
                       </div>
 
@@ -326,7 +369,9 @@ export default function CreateMaintenanceRequestPage() {
                           id="postalCode"
                           placeholder="10001"
                           value={newPropertyData.postalCode}
-                          onChange={(e) => setNewPropertyData((prev) => ({ ...prev, postalCode: e.target.value }))}
+                          onChange={(e) =>
+                            setNewPropertyData((prev) => ({ ...prev, postalCode: e.target.value }))
+                          }
                         />
                       </div>
                     </div>
@@ -362,81 +407,93 @@ export default function CreateMaintenanceRequestPage() {
                 <h3 className="font-semibold">{t("requestDetails.title")}</h3>
 
                 <div className="space-y-2">
-                <Label htmlFor="title">{t("requestTitle")} *</Label>
-                <Input
-                  id="title"
-                  placeholder={t("requestTitlePlaceholder")}
-                  value={formData.title}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-                />
-                {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">{t("description")} *</Label>
-                <Textarea
-                  id="description"
-                  placeholder={t("descriptionPlaceholder")}
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                />
-                {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="category">{t("category")} *</Label>
-                  <Select
-                    value={formData.category}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="plumbing">{t("categories.plumbing")}</SelectItem>
-                      <SelectItem value="electrical">{t("categories.electrical")}</SelectItem>
-                      <SelectItem value="hvac">{t("categories.hvac")}</SelectItem>
-                      <SelectItem value="carpentry">{t("categories.carpentry")}</SelectItem>
-                      <SelectItem value="painting">{t("categories.painting")}</SelectItem>
-                      <SelectItem value="cleaning">{t("categories.cleaning")}</SelectItem>
-                      <SelectItem value="landscaping">{t("categories.landscaping")}</SelectItem>
-                      <SelectItem value="other">{t("categories.other")}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="title">{t("requestTitle")} *</Label>
+                  <Input
+                    id="title"
+                    placeholder={t("requestTitlePlaceholder")}
+                    value={formData.title}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+                  />
+                  {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="priority">{t("priority.label")} *</Label>
-                  <Select
-                    value={formData.priority}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, priority: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">{t("priority.low")}</SelectItem>
-                      <SelectItem value="medium">{t("priority.medium")}</SelectItem>
-                      <SelectItem value="high">{t("priority.high")}</SelectItem>
-                      <SelectItem value="urgent">{t("priority.urgent")}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="description">{t("description")} *</Label>
+                  <Textarea
+                    id="description"
+                    placeholder={t("descriptionPlaceholder")}
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, description: e.target.value }))
+                    }
+                  />
+                  {errors.description && (
+                    <p className="text-sm text-destructive">{errors.description}</p>
+                  )}
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="estimatedCost">{t("estimatedCost")}</Label>
-                <Input
-                  id="estimatedCost"
-                  type="number"
-                  placeholder="500"
-                  value={formData.estimatedCost}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, estimatedCost: e.target.value }))}
-                />
-                {errors.estimatedCost && <p className="text-sm text-destructive">{errors.estimatedCost}</p>}
-              </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="category">{t("category")} *</Label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({ ...prev, category: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="plumbing">{t("categories.plumbing")}</SelectItem>
+                        <SelectItem value="electrical">{t("categories.electrical")}</SelectItem>
+                        <SelectItem value="hvac">{t("categories.hvac")}</SelectItem>
+                        <SelectItem value="carpentry">{t("categories.carpentry")}</SelectItem>
+                        <SelectItem value="painting">{t("categories.painting")}</SelectItem>
+                        <SelectItem value="cleaning">{t("categories.cleaning")}</SelectItem>
+                        <SelectItem value="landscaping">{t("categories.landscaping")}</SelectItem>
+                        <SelectItem value="other">{t("categories.other")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="priority">{t("priority.label")} *</Label>
+                    <Select
+                      value={formData.priority}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({ ...prev, priority: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">{t("priority.low")}</SelectItem>
+                        <SelectItem value="medium">{t("priority.medium")}</SelectItem>
+                        <SelectItem value="high">{t("priority.high")}</SelectItem>
+                        <SelectItem value="urgent">{t("priority.urgent")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="estimatedCost">{t("estimatedCost")}</Label>
+                  <Input
+                    id="estimatedCost"
+                    type="number"
+                    placeholder="500"
+                    value={formData.estimatedCost}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, estimatedCost: e.target.value }))
+                    }
+                  />
+                  {errors.estimatedCost && (
+                    <p className="text-sm text-destructive">{errors.estimatedCost}</p>
+                  )}
+                </div>
               </div>
 
               <div className="flex gap-4">

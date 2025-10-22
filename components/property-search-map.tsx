@@ -44,7 +44,8 @@ export function PropertySearchMap({ properties }: PropertySearchMapProps) {
       // Fix for default marker icon
       delete (L.Icon.Default.prototype as any)._getIconUrl
       L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+        iconRetinaUrl:
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
         iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
       })
@@ -114,12 +115,19 @@ export function PropertySearchMap({ properties }: PropertySearchMapProps) {
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="font-serif font-bold text-lg line-clamp-1">{selectedProperty.title}</h3>
+                  <h3 className="font-serif font-bold text-lg line-clamp-1">
+                    {selectedProperty.title}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     {selectedProperty.city}, {selectedProperty.country}
                   </p>
                 </div>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setSelectedProperty(null)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setSelectedProperty(null)}
+                >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -147,7 +155,9 @@ export function PropertySearchMap({ properties }: PropertySearchMapProps) {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-primary">${selectedProperty.price.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-primary">
+                    ${selectedProperty.price.toLocaleString()}
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {selectedProperty.listing_type === "rent"
                       ? t("perMonth")

@@ -43,11 +43,15 @@ export function ConfirmDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{cancelText === "Cancel" ? t("cancel") : cancelText}</AlertDialogCancel>
+          <AlertDialogCancel>
+            {cancelText === "Cancel" ? t("cancel") : cancelText}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             className={
-              variant === "destructive" ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""
+              variant === "destructive"
+                ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                : ""
             }
           >
             {confirmText === "Continue" ? t("continue") : confirmText}

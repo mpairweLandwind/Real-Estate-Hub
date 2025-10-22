@@ -4,11 +4,12 @@
 
 A comprehensive full-stack real estate management platform that enables property owners, tenants, and administrators to efficiently manage properties, maintenance requests, payments, and property listings. The system provides a seamless experience for browsing properties, submitting maintenance requests, and handling property-related transactions.
 
-##  Project Proposal
+## Project Proposal
 
 ### Problem Statement
 
 The real estate industry faces challenges in managing properties, maintenance requests, and tenant communications efficiently. Property owners struggle with:
+
 - Tracking multiple properties and their maintenance status
 - Managing tenant requests and communications
 - Organizing property listings with accurate location data
@@ -26,9 +27,10 @@ Our Real Estate Management System is a modern web application that addresses the
 5. **Multilingual Support** - Available in English, German, and French
 6. **Cloud Storage** - Firebase integration for image uploads and storage
 
-##  Key Features
+## Key Features
 
 ### 1. Property Management
+
 - **Add Properties**: Multi-step form with image uploads, location picker, and detailed specifications
 - **Edit Properties**: Full CRUD operations with image management
 - **Property Types**: Support for apartments, houses, commercial spaces, offices, and land
@@ -36,6 +38,7 @@ Our Real Estate Management System is a modern web application that addresses the
 - **Status Tracking**: Available, sold, rented status management
 
 ### 2. Maintenance Request System
+
 - **Dual-Mode Property Selection**:
   - Select from existing properties
   - Register new property for maintenance-only purposes
@@ -45,6 +48,7 @@ Our Real Estate Management System is a modern web application that addresses the
 - **Cost Estimation**: Track estimated and actual costs
 
 ### 3. Property Search & Browse
+
 - **Interactive Map View**: Google Maps integration showing all available properties
 - **Advanced Filters**:
   - City/location search with autocomplete
@@ -54,24 +58,28 @@ Our Real Estate Management System is a modern web application that addresses the
 - **Detailed Property Pages**: Full property information with images and location
 
 ### 4. User Management
+
 - **Authentication**: Secure sign-up and login via Supabase
 - **User Profiles**: Manage personal information and account settings
 - **Role-Based Access**: Owner, tenant, and admin roles
 - **Profile Pictures**: Upload and manage profile images
 
 ### 5. Payment System
+
 - **Transaction Records**: Track all payments and transactions
 - **Payment History**: Complete transaction history with status tracking
 - **Revenue Tracking**: Dashboard statistics for completed transactions
 
 ### 6. Internationalization (i18n)
+
 - **Multi-Language Support**: English, German, French
 - **Dynamic Translation**: Real-time language switching
 - **Localized Content**: All UI elements and messages translated
 
-##  Technology Stack
+## Technology Stack
 
 ### Frontend
+
 - **Framework**: Next.js 15.2.4 (App Router)
 - **Language**: TypeScript
 - **UI Library**: React 19
@@ -82,30 +90,34 @@ Our Real Estate Management System is a modern web application that addresses the
 - **Notifications**: Sonner (toast notifications)
 
 ### Backend & Database
+
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Supabase Auth
 - **Storage**: Firebase Storage (images)
 - **API**: Next.js API Routes
 
 ### Maps & Geolocation
+
 - **Maps Provider**: Google Maps JavaScript API
-- **Features**: 
+- **Features**:
   - Interactive map with markers
   - Address autocomplete
   - Location picker with drag-and-drop markers
   - Reverse geocoding
 
 ### Development Tools
+
 - **Package Manager**: Yarn (v3+ with Plug'n'Play)
 - **Validation**: Zod
 - **Date Handling**: date-fns
 - **Code Quality**: ESLint, TypeScript
 
-##  Database Schema
+## Database Schema
 
 ### Core Tables
 
 #### 1. profiles
+
 ```sql
 - id (uuid, PK)
 - user_id (uuid, FK to auth.users)
@@ -117,6 +129,7 @@ Our Real Estate Management System is a modern web application that addresses the
 ```
 
 #### 2. properties
+
 ```sql
 - id (uuid, PK)
 - owner_id (uuid, FK to profiles)
@@ -141,6 +154,7 @@ Our Real Estate Management System is a modern web application that addresses the
 ```
 
 #### 3. property_images
+
 ```sql
 - id (uuid, PK)
 - property_id (uuid, FK to properties)
@@ -151,6 +165,7 @@ Our Real Estate Management System is a modern web application that addresses the
 ```
 
 #### 4. maintenance_requests
+
 ```sql
 - id (uuid, PK)
 - property_id (uuid, FK to properties)
@@ -167,6 +182,7 @@ Our Real Estate Management System is a modern web application that addresses the
 ```
 
 #### 5. transactions
+
 ```sql
 - id (uuid, PK)
 - property_id (uuid, FK to properties)
@@ -179,16 +195,18 @@ Our Real Estate Management System is a modern web application that addresses the
 - created_at (timestamp)
 ```
 
-##  Getting Started
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - Yarn package manager
 - Supabase account
 - Firebase account
 - Google Maps API key
 
 ### Environment Variables
+
 Create a `.env` file in the root directory:
 
 ```env
@@ -211,28 +229,33 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd real-estate-app
 ```
 
 2. **Install dependencies**
+
 ```bash
 yarn install
 ```
 
 3. **Set up Supabase database**
+
 ```bash
 # Run the SQL scripts in the scripts folder
 # In order: 001_create_profiles.sql through 006_create_indexes.sql
 ```
 
 4. **Run development server**
+
 ```bash
 yarn dev
 ```
 
 5. **Open in browser**
+
 ```
 http://localhost:3000
 ```
@@ -287,7 +310,7 @@ real-estate-app/
 └── public/                      # Static assets
 ```
 
-##  User Interface
+## User Interface
 
 ### Key Pages
 
@@ -300,13 +323,14 @@ real-estate-app/
 7. **Profile Management** - Edit user information
 
 ### Design Features
+
 - **Responsive Design**: Mobile-first approach
 - **Dark Mode Ready**: Theme provider included
 - **Accessibility**: ARIA labels and keyboard navigation
 - **Loading States**: Skeletons and spinners for better UX
 - **Error Handling**: User-friendly error messages
 
-##  Security Features
+## Security Features
 
 - **Row Level Security (RLS)**: Supabase RLS policies protect data
 - **Authentication**: Secure user authentication via Supabase Auth
@@ -314,18 +338,20 @@ real-estate-app/
 - **Input Validation**: Zod schemas validate all form inputs
 - **HTTPS**: Secure communication (production)
 
-##  Internationalization
+## Internationalization
 
 The application supports three languages:
+
 - **English (en)**: Default language
 - **German (de)**: Deutsche Übersetzung
 - **French (fr)**: Traduction française
 
 Users can switch languages using the language switcher in the navigation.
 
-##  Future Enhancements
+## Future Enhancements
 
 ### Phase 2
+
 - [ ] Real-time chat between owners and tenants
 - [ ] Email notifications for maintenance updates
 - [ ] Advanced analytics dashboard
@@ -334,6 +360,7 @@ Users can switch languages using the language switcher in the navigation.
 - [ ] Virtual property tours (360° images)
 
 ### Phase 3
+
 - [ ] Contract management system
 - [ ] Automated rent collection
 - [ ] Tenant screening and background checks
@@ -341,27 +368,30 @@ Users can switch languages using the language switcher in the navigation.
 - [ ] Reporting and export functionality
 - [ ] Bulk property import
 
-##  User Roles & Permissions
+## User Roles & Permissions
 
 ### Property Owner
+
 - Add, edit, delete properties
 - View and manage maintenance requests
 - Access payment history
 - View analytics and reports
 
 ### Tenant
+
 - Browse available properties
 - Submit maintenance requests
 - View payment history
 - Manage profile
 
 ### Administrator
+
 - Full system access
 - User management
 - Content moderation
 - System configuration
 
-##  Testing
+## Testing
 
 ```bash
 # Run tests (when implemented)
@@ -377,21 +407,22 @@ yarn type-check
 yarn lint
 ```
 
-##  Deployment
+## Deployment
 
 ### Vercel (Recommended)
+
 1. Push code to GitHub
 2. Connect repository to Vercel
 3. Configure environment variables
 4. Deploy automatically on push
 
 ### Other Platforms
+
 - Compatible with any Node.js hosting
 - Requires environment variables configuration
 - Supports serverless and traditional deployments
 
-
-##  Acknowledgments
+## Acknowledgments
 
 - **Next.js Team** - Amazing React framework
 - **Supabase Team** - Excellent backend-as-a-service
@@ -402,7 +433,7 @@ yarn lint
 
 ---
 
-**Built with  using Next.js, TypeScript, and Supabase**
+**Built with using Next.js, TypeScript, and Supabase**
 
 **Version**: 1.0.0  
 **Last Updated**: October 2025

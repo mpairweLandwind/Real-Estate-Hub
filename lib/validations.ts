@@ -25,8 +25,20 @@ export type PropertyFormData = z.infer<typeof propertySchema>
 export const maintenanceSchema = z.object({
   propertyId: z.string().uuid("Invalid property"),
   title: z.string().min(5, "Title must be at least 5 characters").max(100, "Title too long"),
-  description: z.string().min(10, "Description must be at least 10 characters").max(1000, "Description too long"),
-  category: z.enum(["plumbing", "electrical", "hvac", "carpentry", "painting", "cleaning", "landscaping", "other"]),
+  description: z
+    .string()
+    .min(10, "Description must be at least 10 characters")
+    .max(1000, "Description too long"),
+  category: z.enum([
+    "plumbing",
+    "electrical",
+    "hvac",
+    "carpentry",
+    "painting",
+    "cleaning",
+    "landscaping",
+    "other",
+  ]),
   priority: z.enum(["low", "medium", "high", "urgent"]),
   estimatedCost: z.number().min(0).max(1000000).optional().nullable(),
 })

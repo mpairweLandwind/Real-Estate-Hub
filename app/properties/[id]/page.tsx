@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/confirm-dialog"
-import { useToast } from "@/components/ui/toast"
+import { useToast } from "@/hooks/use-toast"
 import { Building2, Bed, Bath, Maximize, MapPin, ArrowLeft, Edit, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
@@ -17,7 +17,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
   const t = useTranslations("properties")
   const router = useRouter()
   const supabase = createClient()
-  const { addToast } = useToast()
+  const { toast } = useToast()
   const [property, setProperty] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -41,10 +41,10 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
         .single()
 
       if (error || !data) {
-        addToast({
+        toast({
           title: "Error",
           description: "Property not found or you don't have permission to view it",
-          variant: "error",
+          variant: "destructive",
         })
         router.push("/properties")
         return
@@ -65,19 +65,19 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
 
       if (error) throw error
 
-      addToast({
+      toast({
         title: "Success!",
         description: "Property deleted successfully",
-        variant: "success",
+        // variant: "default", // success not available in Radix toast
       })
 
       router.push("/properties")
     } catch (err: any) {
       console.error("[v0] Error deleting property:", err)
-      addToast({
+      toast({
         title: "Error",
         description: err.message || "Failed to delete property",
-        variant: "error",
+        variant: "destructive",
       })
     } finally {
       setIsDeleting(false)
@@ -189,7 +189,9 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
 
                 <div>
                   <h3 className="font-serif font-bold text-xl mb-2">{t("description")}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{property.description || t("noDescription")}</p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {property.description || t("noDescription")}
+                  </p>
                 </div>
 
                 <div>
@@ -197,11 +199,15 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="flex justify-between py-2 border-b border-border">
                       <span className="text-muted-foreground">{t("propertyType")}</span>
-                      <span className="font-medium capitalize">{t(`types.${property.property_type}`)}</span>
+                      <span className="font-medium capitalize">
+                        {t(`types.${property.property_type}`)}
+                      </span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-border">
                       <span className="text-muted-foreground">{t("listingType")}</span>
-                      <span className="font-medium capitalize">{t(`listingTypes.${property.listing_type}`)}</span>
+                      <span className="font-medium capitalize">
+                        {t(`listingTypes.${property.listing_type}`)}
+                      </span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-border">
                       <span className="text-muted-foreground">{t("city")}</span>
@@ -219,7 +225,9 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                     )}
                     <div className="flex justify-between py-2 border-b border-border">
                       <span className="text-muted-foreground">{t("listed")}</span>
-                      <span className="font-medium">{new Date(property.created_at).toLocaleDateString()}</span>
+                      <span className="font-medium">
+                        {new Date(property.created_at).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -231,9 +239,13 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
             <Card>
               <CardContent className="p-6">
                 <div className="mb-6">
-                  <p className="text-4xl font-bold text-primary mb-1">${property.price.toLocaleString()}</p>
+                  <p className="text-4xl font-bold text-primary mb-1">
+                    ${property.price.toLocaleString()}
+                  </p>
                   <p className="text-sm text-muted-foreground">
-                    {property.listing_type === "rent" ? t("perMonth") : t(`listingTypes.${property.listing_type}`)}
+                    {property.listing_type === "rent"
+                      ? t("perMonth")
+                      : t(`listingTypes.${property.listing_type}`)}
                   </p>
                 </div>
                 <Link href={`/browse/${params.id}`}>

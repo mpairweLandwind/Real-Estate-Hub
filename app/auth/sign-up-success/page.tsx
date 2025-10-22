@@ -21,11 +21,14 @@ export default function SignUpSuccessPage() {
                 </div>
               </div>
               <CardTitle className="text-2xl font-serif text-center">Check Your Email</CardTitle>
-              <CardDescription className="text-center">We've sent you a confirmation link</CardDescription>
+              <CardDescription className="text-center">
+                We've sent you a confirmation link
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground text-center">
-                Please check your email and click the confirmation link to activate your account before signing in.
+                Please check your email and click the confirmation link to activate your account
+                before signing in.
               </p>
               <Link href="/auth/login" className="block">
                 <Button variant="outline" className="w-full bg-transparent">

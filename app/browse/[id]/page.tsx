@@ -135,7 +135,9 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
                     )}
                     <div className="flex justify-between py-2 border-b border-border">
                       <span className="text-muted-foreground">Listed</span>
-                      <span className="font-medium">{new Date(property.created_at).toLocaleDateString()}</span>
+                      <span className="font-medium">
+                        {new Date(property.created_at).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -168,7 +170,9 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
             <Card>
               <CardContent className="p-6">
                 <div className="mb-6">
-                  <p className="text-4xl font-bold text-primary mb-1">${property.price.toLocaleString()}</p>
+                  <p className="text-4xl font-bold text-primary mb-1">
+                    ${property.price.toLocaleString()}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {property.listing_type === "rent" ? "per month" : property.listing_type}
                   </p>
@@ -197,7 +201,9 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
                     <Building2 className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="font-semibold">{property.profiles?.full_name || "Property Owner"}</p>
+                    <p className="font-semibold">
+                      {property.profiles?.full_name || "Property Owner"}
+                    </p>
                     <p className="text-sm text-muted-foreground">Verified Owner</p>
                   </div>
                 </div>
@@ -221,7 +227,9 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Days Listed</span>
                   <span className="font-semibold">
-                    {Math.floor((Date.now() - new Date(property.created_at).getTime()) / (1000 * 60 * 60 * 24))}
+                    {Math.floor(
+                      (Date.now() - new Date(property.created_at).getTime()) / (1000 * 60 * 60 * 24)
+                    )}
                   </span>
                 </div>
               </CardContent>

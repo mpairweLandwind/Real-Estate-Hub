@@ -14,7 +14,13 @@ import {
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { CreditCard, Smartphone, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
@@ -129,7 +135,9 @@ export function PaymentModal({
           <div className="space-y-2">
             <Label>{t("amount")}</Label>
             <div className="text-3xl font-bold text-primary">${amount.toLocaleString()}</div>
-            <p className="text-sm text-muted-foreground capitalize">{t(`transactionTypes.${transactionType}`)}</p>
+            <p className="text-sm text-muted-foreground capitalize">
+              {t(`transactionTypes.${transactionType}`)}
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -169,7 +177,9 @@ export function PaymentModal({
             </div>
           )}
 
-          {error && <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">{error}</div>}
+          {error && (
+            <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">{error}</div>
+          )}
 
           <div className="flex gap-3">
             <Button onClick={handlePayment} disabled={isLoading} className="flex-1">
@@ -185,7 +195,12 @@ export function PaymentModal({
                 </>
               )}
             </Button>
-            <Button variant="outline" onClick={() => setOpen(false)} disabled={isLoading} className="bg-transparent">
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isLoading}
+              className="bg-transparent"
+            >
               {t("cancel")}
             </Button>
           </div>

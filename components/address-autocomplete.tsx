@@ -20,12 +20,12 @@ interface AddressAutocompleteProps {
   disabled?: boolean
 }
 
-export function AddressAutocomplete({ 
-  value, 
-  onChange, 
+export function AddressAutocomplete({
+  value,
+  onChange,
   placeholder = "Search city or address...",
   className = "",
-  disabled = false 
+  disabled = false,
 }: AddressAutocompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const autocompleteInstanceRef = useRef<google.maps.places.Autocomplete | null>(null)
@@ -34,7 +34,7 @@ export function AddressAutocomplete({
 
   useEffect(() => {
     let mounted = true
-    
+
     const initializeAutocomplete = async () => {
       if (typeof window === "undefined" || !inputRef.current || !mounted) return
 
@@ -60,18 +60,18 @@ export function AddressAutocomplete({
         // Handle place selection
         autocompleteInstance.addListener("place_changed", () => {
           if (!mounted) return
-          
+
           const place = autocompleteInstance.getPlace()
 
           if (place.geometry?.location) {
             const lat = place.geometry.location.lat()
             const lng = place.geometry.location.lng()
-            
+
             // Extract city from address components
             let cityName = ""
             if (place.address_components) {
-              const cityComponent = place.address_components.find(
-                (component: any) => component.types.includes("locality")
+              const cityComponent = place.address_components.find((component: any) =>
+                component.types.includes("locality")
               )
               cityName = cityComponent?.long_name || place.name || place.formatted_address || ""
             } else {
@@ -96,7 +96,7 @@ export function AddressAutocomplete({
     // Cleanup function
     return () => {
       mounted = false
-      
+
       if (autocompleteInstanceRef.current) {
         try {
           google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current)

@@ -8,7 +8,7 @@ const firebaseConfig = {
   projectId: "mernapp-6e488",
   storageBucket: "mernapp-6e488.appspot.com",
   messagingSenderId: "536088247858",
-  appId: "1:536088247858:web:361e7040eb5130f75e462b"
+  appId: "1:536088247858:web:361e7040eb5130f75e462b",
 }
 
 // Initialize Firebase (avoid re-initialization)

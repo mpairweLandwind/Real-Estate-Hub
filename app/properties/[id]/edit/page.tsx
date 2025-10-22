@@ -11,10 +11,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { MapPicker } from "@/components/map-picker"
 import { ImageUpload } from "@/components/image-upload"
-import { useToast } from "@/components/ui/toast"
+import { useToast } from "@/hooks/use-toast"
 import { propertySchema } from "@/lib/validations"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -25,7 +31,7 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
   const t = useTranslations("properties")
   const router = useRouter()
   const supabase = createClient()
-  const { addToast } = useToast()
+  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [isFetching, setIsFetching] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -50,7 +56,9 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
   })
 
   const [images, setImages] = useState<string[]>([])
-  const [existingImages, setExistingImages] = useState<Array<{ id: string; url: string; is_primary: boolean; display_order: number }>>([])
+  const [existingImages, setExistingImages] = useState<
+    Array<{ id: string; url: string; is_primary: boolean; display_order: number }>
+  >([])
 
   useEffect(() => {
     async function fetchProperty() {
@@ -70,10 +78,10 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
         .single()
 
       if (error || !data) {
-        addToast({
+        toast({
           title: "Error",
           description: "Property not found or you don't have permission to edit it",
-          variant: "error",
+          variant: "destructive",
         })
         router.push("/properties")
         return
@@ -106,8 +114,15 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
         .order("display_order", { ascending: true })
 
       if (!imageError && imageData) {
-        setExistingImages(imageData.map(img => ({ id: img.id, url: img.image_url, is_primary: img.is_primary, display_order: img.display_order })))
-        setImages(imageData.map(img => img.image_url))
+        setExistingImages(
+          imageData.map((img) => ({
+            id: img.id,
+            url: img.image_url,
+            is_primary: img.is_primary,
+            display_order: img.display_order,
+          }))
+        )
+        setImages(imageData.map((img) => img.image_url))
       }
 
       setIsFetching(false)
@@ -182,22 +197,17 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
 
       // Handle image changes
       // 1. Remove deleted images (images that were in existingImages but not in images)
-      const removedImages = existingImages.filter(
-        (existing) => !images.includes(existing.url)
-      )
-      
+      const removedImages = existingImages.filter((existing) => !images.includes(existing.url))
+
       for (const removedImage of removedImages) {
-        await supabase
-          .from("property_images")
-          .delete()
-          .eq("id", removedImage.id)
+        await supabase.from("property_images").delete().eq("id", removedImage.id)
       }
 
       // 2. Add new images (images that are in images but not in existingImages)
       const newImages = images.filter(
         (url) => !existingImages.some((existing) => existing.url === url)
       )
-      
+
       if (newImages.length > 0) {
         const imageInserts = newImages.map((imageUrl, index) => ({
           property_id: params.id,
@@ -206,9 +216,7 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
           display_order: images.indexOf(imageUrl),
         }))
 
-        await supabase
-          .from("property_images")
-          .insert(imageInserts)
+        await supabase.from("property_images").insert(imageInserts)
       }
 
       // 3. Update display_order and is_primary for remaining images
@@ -227,10 +235,10 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
         }
       }
 
-      addToast({
+      toast({
         title: "Success!",
         description: "Property updated successfully",
-        variant: "success",
+        // variant: "default", // success not available in Radix toast
       })
 
       router.push(`/properties/${params.id}`)
@@ -245,10 +253,10 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
         setErrors(newErrors)
       }
 
-      addToast({
+      toast({
         title: "Error",
         description: err.message || "Failed to update property",
-        variant: "error",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -306,16 +314,22 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
                     placeholder={t("descriptionPlaceholder")}
                     rows={4}
                     value={formData.description}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, description: e.target.value }))
+                    }
                   />
-                  {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
+                  {errors.description && (
+                    <p className="text-sm text-destructive">{errors.description}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="propertyType">{t("propertyType")} *</Label>
                   <Select
                     value={formData.propertyType}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, propertyType: value }))}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, propertyType: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -334,7 +348,9 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
                   <Label htmlFor="listingType">{t("listingType")} *</Label>
                   <Select
                     value={formData.listingType}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, listingType: value }))}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, listingType: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -408,9 +424,13 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
                     type="number"
                     placeholder="2"
                     value={formData.bathrooms}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, bathrooms: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, bathrooms: e.target.value }))
+                    }
                   />
-                  {errors.bathrooms && <p className="text-sm text-destructive">{errors.bathrooms}</p>}
+                  {errors.bathrooms && (
+                    <p className="text-sm text-destructive">{errors.bathrooms}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -451,7 +471,9 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
                     id="postalCode"
                     placeholder="10001"
                     value={formData.postalCode}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, postalCode: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, postalCode: e.target.value }))
+                    }
                   />
                 </div>
               </div>
@@ -470,7 +492,8 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
               <div className="space-y-2">
                 <Label>Property Images</Label>
                 <p className="text-sm text-muted-foreground">
-                  Upload high-quality images of your property. The first image will be used as the primary photo.
+                  Upload high-quality images of your property. The first image will be used as the
+                  primary photo.
                 </p>
                 <ImageUpload
                   images={images}
@@ -484,7 +507,11 @@ export default function EditPropertyPage({ params }: { params: { id: string } })
                 <Button type="submit" disabled={isLoading} className="flex-1">
                   {isLoading ? t("savingChanges") : t("saveChanges")}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => router.push(`/properties/${params.id}`)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.push(`/properties/${params.id}`)}
+                >
                   {t("cancel")}
                 </Button>
               </div>
